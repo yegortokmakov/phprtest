@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Phpperftest CLI
+ */
+
+$loader = require_once(__DIR__.'/../vendor/autoload.php');
+$loader->add('Phpperftest', __DIR__ . '/../src');
+$loader->register(true);
+
+use Symfony\Component\Console\Application;
+
+$app = new Application('Phpperftest', Phpperftest\Phpperftest::VERSION);
+
+$app->add(new Phpperftest\Command\Run('run'));
+
+$app->run();

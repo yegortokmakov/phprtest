@@ -1,0 +1,6 @@
+/.idea/*
+.DS_Store
+/vendor/*
+/cache/
+/.vagrant
+/build/*
