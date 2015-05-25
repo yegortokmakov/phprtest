@@ -1,6 +1,6 @@
 <?php
 
-namespace testname;
+namespace testname2;
 
 use Phpperftest\TestSuite;
 

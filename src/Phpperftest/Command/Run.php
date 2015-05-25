@@ -3,6 +3,7 @@
 namespace Phpperftest\Command;
 
 use Phpperftest\Phpperftest;
+use Phpperftest\PhpperftestException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,20 +13,9 @@ use Symfony\Component\Console\Command\Command;
 class Run extends Command
 {
     /**
-     * @var Phpperftest
-     */
-    protected $phpperftest;
-
-    /**
      * @var array of options (command run)
      */
     protected $options=[];
-
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
-
 
     /**
      * Sets Run arguments
@@ -35,6 +25,8 @@ class Run extends Command
         $this->setDefinition(
             array(
                 new InputArgument('suite', InputArgument::REQUIRED, 'suite to be tested'),
+                new InputOption('no-checks', '', InputOption::VALUE_NONE, 'Run tests without assertions'),
+                new InputOption('etalon-test', '', InputOption::VALUE_NONE, 'Run etalon test'),
             )
         );
 
@@ -48,42 +40,82 @@ class Run extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->options = $input->getOptions();
-        $this->output = $output;
+        $output->writeln(Phpperftest::versionString() . PHP_EOL . str_repeat('-', strlen(Phpperftest::versionString()) + 5) . PHP_EOL);
 
-        $suite = $input->getArgument('suite');
+        $tests = $this->loadTests($input->getArgument('suite'));
 
-        $tests = $this->getTests($suite);
-
-        $this->phpperftest = new Phpperftest();
-
-        foreach ($tests as $test) {
-            $this->phpperftest->run($suite, $test);
+        if ($input->getOption('etalon-test')) {
+            array_unshift($tests, 'Phpperftest\EtalonTest');
         }
 
-//        $this->phpperftest->printResult();
-//
-//        if (! $this->phpperftest->getResult()->wasSuccessful()) {
-//            exit(1);
-//        }
+        $phpperftest = new Phpperftest();
+
+        foreach ($tests as $test) {
+            $phpperftest->run($test);
+        }
+
+        if ($input->getOption('no-checks')) {
+            $output->writeln("<fg=white;bg=yellow>  All assertions are skipped (--no-checks flag)  </fg=white;bg=yellow>\n");
+        } else {
+            $phpperftest->checkLimits();
+        }
+
+        $output->write($phpperftest->processResults());
+
+        if ($phpperftest->isFailure()) {
+            $output->writeln("\n<fg=white;bg=red>\n TEST FAILED \n</fg=white;bg=red>");
+            exit(1);
+        }
     }
 
-    protected function getTests($path)
+    protected function loadTests($path)
     {
-        $tests = array();
+        $path = getcwd() . DIRECTORY_SEPARATOR . $path;
 
         if (is_file($path)) {
-            $tests[] = $path;
+            $files = array($path);
         } elseif (is_dir($path)) {
-            $files = scandir($path);
+            $files = $this->scanTestDir(realpath($path));
+        }
 
-            foreach ($files as $file) {
-                if (substr($file, -8) == 'Test.php') {
-                    $tests[] = $file;
-                }
-            }
+        $tests = array();
+
+        foreach ($files as $filename) {
+            $tests[] = $this->loadTest($filename);
         }
 
         return $tests;
+    }
+
+    protected function scanTestDir($path)
+    {
+        $testFiles = array();
+
+        foreach (scandir($path) as $element) {
+            if ($element == '.' || $element == '..') continue;
+
+            $element = $path . DIRECTORY_SEPARATOR . $element;
+
+            if (is_file($element) && substr($element, -8) == 'Test.php') {
+                $testFiles[] = $element;
+            } elseif (is_dir($element)) {
+                $testFiles = array_merge($testFiles, $this->scanTestDir($element));
+            }
+        }
+
+        return $testFiles;
+    }
+
+    protected function loadTest($filename)
+    {
+        require_once($filename);
+
+        $className = pathinfo($filename)['filename'];
+
+        foreach (array_reverse(get_declared_classes()) as $loadedClass) {
+            if (strpos($loadedClass, $className)) {
+                return $loadedClass;
+            }
+        }
     }
 }
