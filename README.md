@@ -5,7 +5,7 @@ Todo:
 + amount of runs to count averages
 + etalon test
 + human readable limits
-+ count real-current peak memory usage
++ use tick profiler
 + refactor table output
 
 Annotations todo:
