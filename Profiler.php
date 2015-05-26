@@ -2,32 +2,73 @@
 
 class Profiler
 {
+    protected $realMemoryUsage;
+    protected $logFileHandler;
 
-    private $_data_array = array();
+    protected $saveMemoryLog;
+    protected $saveTimestamp;
+    protected $saveBacktrace;
 
-    function __construct()
+    protected $maxMemory = null;
+    protected $minMemory = null;
+    protected $iniMemory = null;
+
+    protected $logs = array();
+
+    public function __construct($realMemoryUsage = true, $profileFile = null, $memoryLog = false, $timestamp = false, $backtrace = false)
     {
-        register_tick_function( array( $this, "tick" ) );
+        $this->realMemoryUsage = $realMemoryUsage;
+
+        $this->saveMemoryLog = $memoryLog;
+        $this->saveTimestamp = $timestamp;
+        $this->saveBacktrace = $backtrace;
+
+        if (!is_null($profileFile)) {
+            $this->logFileHandler = true;
+        }
+    }
+
+    public function start()
+    {
+        register_tick_function(array($this, "tick" ));
         declare(ticks = 1);
     }
 
-    function __destruct()
+    public function stop()
     {
-        unregister_tick_function( array( $this, "tick" ) );
+        unregister_tick_function(array($this,"tick"));
     }
 
     function tick()
     {
-        $this->_data_array[] = array(
-            "memory" => memory_get_usage(),
-            "time" => microtime( TRUE ),
-            //if you need a backtrace you can uncomment this next line
-            //"backtrace" => debug_backtrace( FALSE ),
-        );
+        $memUsage = memory_get_usage($this->realMemoryUsage);
+
+        if (is_null($this->iniMemory)) $this->iniMemory = $this->minMemory = $memUsage;
+
+        if ($memUsage > $this->maxMemory) $this->maxMemory = $memUsage;
+        if ($memUsage < $this->minMemory) $this->minMemory = $memUsage;
+
+        if ($this->saveMemoryLog) $this->logs['memory'][] = $memUsage;
+        if ($this->saveTimestamp) $this->logs['time'][] = microtime(true);
+        if ($this->saveBacktrace) $this->logs['backtrace'][] = debug_backtrace(false);
+
+        if ($this->logFileHandler) {
+            $a1 = $a2 = $this->logs;
+            var_dump(array_merge_recursive($a1, $a2));die;
+            var_dump(serialize($this->logs));die;
+            echo 'dump to file';
+        }
     }
 
-    function getDataArray()
+    public function getResults()
     {
-        return $this->_data_array;
+        var_dump($this->minMemory, $this->maxMemory, $this->logs);
     }
 }
+
+$a = new Profiler(0, 0, true, true, true);
+$a->start();
+$s = str_repeat('asd' , 99999);
+$a->stop();
+$a->getResults();
+
