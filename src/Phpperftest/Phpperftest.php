@@ -14,6 +14,8 @@ class Phpperftest
 
     protected $printer;
 
+    protected $profiler;
+
     protected $result = array();
     protected $status = array(
         'tests' => 0,
@@ -28,6 +30,7 @@ class Phpperftest
         $this->annotationManager->registry['assert'] = 'Phpperftest\Annotations\AssertAnnotation';
 
         $this->printer = new ConsolePrinter;
+        $this->profiler = new Profiler(true);
     }
 
     public function run($testClassName)
@@ -70,20 +73,18 @@ class Phpperftest
 
     protected function runTest($testObject, $methodName)
     {
-        $memBefore = memory_get_usage(true);
-        $timeBefore = microtime(true);
+        $this->profiler->start();
 
         $testObject->$methodName();
 
+        $this->profiler->stop();
+
         return array(
             'memoryUsage' => array(
-                'result' => memory_get_usage(true) - $memBefore,
+                'result' => $this->profiler->getMaxMemory(),
             ),
             'timeUsage' => array(
-                'result' => microtime(true) - $timeBefore,
-            ),
-            'memoryPeakUsage' => array(
-                'result' => memory_get_peak_usage(true),
+                'result' => $this->profiler->getTimeUsed(),
             ),
         );
     }

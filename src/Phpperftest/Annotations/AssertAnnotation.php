@@ -19,7 +19,7 @@ class AssertAnnotation extends Annotation implements IAnnotationParser
 
     public $hardLimit = null;
 
-    protected static $metrics = array('memoryUsage', 'memoryPeakUsage', 'timeUsage');
+    protected static $metrics = array('memoryUsage', 'timeUsage');
 
     /**
      * Initialize the annotation.

@@ -14,6 +14,8 @@ class Profiler
     protected $minMemory = null;
     protected $iniMemory = null;
 
+    protected $timeUsed = null;
+
     protected $logFile = null;
     protected $logFileHandler = null;
 
@@ -32,9 +34,14 @@ class Profiler
 
     public function start()
     {
+        $this->maxMemory = $this->minMemory = $this->iniMemory = $this->logs = null;
+
         if (!is_null($this->logFile)) {
             $this->logFileHandler = fopen($this->logFile, "w");
         }
+
+        $this->timeUsed = microtime(true);
+
         register_tick_function(array($this, "tick" ));
         declare(ticks = 1);
     }
@@ -42,6 +49,9 @@ class Profiler
     public function stop()
     {
         unregister_tick_function(array($this,"tick"));
+
+        $this->timeUsed = microtime(true) - $this->timeUsed;
+
         if ($this->logFileHandler) {
             fclose($this->logFileHandler);
         }
@@ -74,6 +84,11 @@ class Profiler
     public function getMinMemory()
     {
         return $this->minMemory;
+    }
+
+    public function getTimeUsed()
+    {
+        return $this->timeUsed;
     }
 
     public function getLogs()
