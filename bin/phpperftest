@@ -4,7 +4,22 @@
  * Phpperftest CLI
  */
 
-$loader = require_once(__DIR__.'/../vendor/autoload.php');
+$loader = null;
+
+foreach (array(__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php') as $file) {
+    if (file_exists($file)) {
+        $loader = require_once($file);
+        break;
+    }
+}
+
+if (!$loader) {
+    echo 'You need to set up the project dependencies using the following commands:' . PHP_EOL .
+        'wget http://getcomposer.org/composer.phar' . PHP_EOL .
+        'php composer.phar install' . PHP_EOL;
+    die(1);
+}
+
 $loader->add('Phpperftest', __DIR__ . '/../src');
 $loader->register(true);
 

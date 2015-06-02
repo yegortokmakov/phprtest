@@ -26,7 +26,8 @@ class Phpperftest
 
     public function __construct()
     {
-        Annotations::$config['cache'] = new AnnotationCache(__DIR__ . '/../../tests/phpperf/cache');
+//        Annotations::$config['cache'] = new AnnotationCache(__DIR__ . '/../../tests/phpperf/cache');
+        Annotations::$config['cache'] = false;
         $this->annotationManager = Annotations::getManager();
         $this->annotationManager->registry['assert'] = 'Phpperftest\Annotations\AssertAnnotation';
 
