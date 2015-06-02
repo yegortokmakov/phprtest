@@ -55,16 +55,33 @@ class AssertAnnotation extends Annotation implements IAnnotationParser
         }
 
         // https://bugs.php.net/bug.php?id=55416
-        $parsed = @array_map(function ($limit) {
-            $limit = floatval($limit);
+        $parsed = @array_map(function ($limit) use ($metric) {
+            if ($metric == 'memoryUsage') {
+                $limit = self::toByte($limit);
+            }
+
             if ($limit == 0) {
                 throw new AnnotationException('Invalid @assert annotation: limit must be >0');
             }
+
             return $limit;
         }, $parsed);
 
         array_unshift($parsed, $metric);
 
         return $parsed;
+    }
+
+    protected static function toByte($value) {
+        $aUnits = array('K'=>1, 'M'=>2, 'G'=>3, 'T'=>4, 'P'=>5, 'E'=>6, 'Z'=>7, 'Y'=>8);
+        $sUnit  = strtoupper(trim(substr($value, -1)));
+
+        if (isset($aUnits[$sUnit])) {
+            $unit = pow(1024, $aUnits[$sUnit]);
+        } else {
+            $unit = 1;
+        }
+
+        return floatval($value) * $unit;
     }
 }

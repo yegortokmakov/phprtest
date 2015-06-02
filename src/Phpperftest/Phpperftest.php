@@ -16,7 +16,8 @@ class Phpperftest
 
     protected $profiler;
 
-    protected $result = array();
+    protected $results = array();
+
     protected $status = array(
         'tests' => 0,
         'softHits' => array(),
