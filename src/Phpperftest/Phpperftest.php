@@ -10,7 +10,10 @@ class Phpperftest
 {
     const VERSION = "0.1";
 
-    protected $annotationManager;
+    /**
+     * @var \mindplay\annotations\AnnotationManager
+     */
+    protected $annotations;
 
     protected $printer;
 
@@ -28,8 +31,9 @@ class Phpperftest
     {
 //        Annotations::$config['cache'] = new AnnotationCache(__DIR__ . '/../../tests/phpperf/cache');
         Annotations::$config['cache'] = false;
-        $this->annotationManager = Annotations::getManager();
-        $this->annotationManager->registry['assert'] = 'Phpperftest\Annotations\AssertAnnotation';
+        $this->annotations = Annotations::getManager();
+        $this->annotations->registry['assert'] = 'Phpperftest\Annotations\AssertAnnotation';
+        $this->annotations->registry['provider'] = 'Phpperftest\Annotations\ProviderAnnotation';
 
         $this->printer = new ConsolePrinter;
         $this->profiler = new Profiler(true);
@@ -75,8 +79,21 @@ class Phpperftest
 
     protected function runTest($testObject, $methodName)
     {
+        /** @var \Phpperftest\Annotations\ProviderAnnotation[] $provider */
+        $provider = $this->annotations->getMethodAnnotations(get_class($testObject), $methodName, '@provider');
+        if (count($provider)) {
+            $provider = $provider[0]->getProvider();
+
+            if (method_exists($testObject, $provider)) {
+                throw new PhpperftestException(sprintf('[%s:%s] Provider method %s not found', get_class($testObject), $methodName, $provider));
+            }
+            $providerData = $testObject->$provider();
+            var_dump($providerData );die;
+        }
+
         $this->profiler->start();
 
+        call_user_func_array()
         $testObject->$methodName();
 
         $this->profiler->stop();
@@ -114,7 +131,7 @@ class Phpperftest
 
     protected function getLimits($testClassName, $methodName)
     {
-        $annotations = $this->annotationManager->getMethodAnnotations($testClassName, $methodName, '@assert');
+        $annotations = $this->annotations->getMethodAnnotations($testClassName, $methodName, '@assert');
         $limits = array();
 
         foreach ($annotations as $annotation) {

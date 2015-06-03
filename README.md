@@ -6,3 +6,4 @@ Todo:
 + Refactor table renderer
 + Setting for annotations cache path
 + Support for 2,5M unit in limits
++ Limits for etalon test

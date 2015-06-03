@@ -10,11 +10,17 @@ class DummyTest extends TestSuite
     /**
      * @assert memoryUsage 1 3
      * @assert timeUsage 1
+     * @provider simpleProvider
      */
     public function testSimple()
     {
         // echo 'simpleTest' . PHP_EOL;
         
+    }
+
+    public function simpleProvider()
+    {
+        return [1, 2, 3];
     }
 
     /**
