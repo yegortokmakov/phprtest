@@ -6,28 +6,6 @@ it allows developers to keep track of memory consumption and execution time of c
 of software. PHPPerfTest allows to set up soft and hard limits for each test suite and is
 easy to integrate with your favorite CI solution.
 
-Installation
-------------
-
-PHPPerfTest is available on Packagist ([yegortokmakov/phpperftest](http://packagist.org/packages/yegortokmakov/phpperftest))
-and as such installable via [Composer](http://getcomposer.org/).
-
-```bash
-php composer.phar require yegortokmakov/phpperftest
-```
-
-Or simply add a dependency on yegortokmakov/phpperftest to your project's composer.json file
-if you use Composer to manage the dependencies of your project. Here is a minimal example of a
-composer.json file that just defines a development-time dependency on PHPPerfTest:
-
-```json
-{
-    "require-dev": {
-        "yegortokmakov/phpperftest": "dev-master"
-    }
-}
-```
-
 Usage
 -------
 
@@ -73,6 +51,28 @@ testImportCommand:memoryUsage warning assertion for memoryUsage: 7141330 > 62914
 1 tests completed. 1 warnings, 0 failures.
 ```
 
+Installation
+------------
+
+PHPPerfTest is available on Packagist ([yegortokmakov/phpperftest](http://packagist.org/packages/yegortokmakov/phpperftest))
+and as such installable via [Composer](http://getcomposer.org/).
+
+```bash
+php composer.phar require yegortokmakov/phpperftest
+```
+
+Or simply add a dependency on yegortokmakov/phpperftest to your project's composer.json file
+if you use Composer to manage the dependencies of your project. Here is a minimal example of a
+composer.json file that just defines a development-time dependency on PHPPerfTest:
+
+```json
+{
+    "require-dev": {
+        "yegortokmakov/phpperftest": "dev-master"
+    }
+}
+```
+
 Author
 -------
 
@@ -91,7 +91,6 @@ Todo
 + Time weights for mock calls
 + Multiple runs of one test (average)
 + Refactor table renderer
-+ Setting for annotations cache path
 + Support for 2,5M unit in limits
 + Limits for etalon test
 + Test coverage
