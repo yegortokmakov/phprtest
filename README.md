@@ -10,7 +10,7 @@ Usage
 -------
 
 Here is a basic test of Symfony console application. In this test we run `import` command
-and execution time is less than 0.05 seconds, soft memory usage limit is 6 MB and hard memory
+and assert that execution time is less than 0.05 seconds, soft memory usage limit is 6 MB and hard memory
 usage limit is 10 MB.
 
 ```php
