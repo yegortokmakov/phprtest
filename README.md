@@ -1,7 +1,7 @@
 PHPPerfTest
 -------
 
-PHPPerfTest is a small performance tests for modern PHP applications. In a fashion of PHPUnit,
+PHPPerfTest is a simple performance tests for modern PHP applications. In a fashion of PHPUnit,
 it allows developers to keep track of memory consumption and execution time of critical parts
 of software. PHPPerfTest allows to set up soft and hard limits for each test suite and is
 easy to integrate with your favorite CI solution.
@@ -94,3 +94,5 @@ Todo
 + Setting for annotations cache path
 + Support for 2,5M unit in limits
 + Limits for etalon test
++ Test coverage
++ Move tests to examples
