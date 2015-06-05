@@ -4,5 +4,5 @@ namespace Phpperftest\Printer;
 
 interface PrinterInterface
 {
-    public function render($results, $status);
+    public function render($output, $status);
 }

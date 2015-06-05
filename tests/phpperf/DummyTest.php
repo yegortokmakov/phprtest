@@ -7,7 +7,7 @@ use Phpperftest\TestSuite;
 class DummyTest extends TestSuite
 {
     /**
-     * @assert memoryUsage 1 3
+     * @assert memoryUsage 6.5M 3
      * @assert timeUsage 1
      * @provider simpleProvider
      * @repeat 3

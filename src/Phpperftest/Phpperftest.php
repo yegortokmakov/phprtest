@@ -57,12 +57,7 @@ class Phpperftest
 
     public function processResults()
     {
-        ob_start();
-        $this->printer->render($this->results, $this->status);
-        $results = ob_get_contents();
-        ob_end_clean();
-
-        return $results;
+        return $this->printer->render($this->results, $this->status);
     }
 
     public static function versionString()

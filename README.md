@@ -19,7 +19,7 @@ usage limit is 10 MB.
 class ImportTest extends \Phpperftest\TestSuite
 {
     /**
-     * @assert memoryUsage 6M 10M
+     * @assert memoryUsage 6.5M 10M
      * @assert timeUsage 0.05
      */
     public function testImportCommand()
@@ -41,7 +41,7 @@ ImportTest
 +-------------------------------+----------+-----------+-----------+---------+
 |            METRIC             |  RESULT  | SOFTLIMIT | HARDLIMIT | STATUS  |
 +-------------------------------+----------+-----------+-----------+---------+
-| testImportCommand:memoryUsage | 7141330  | 6291456   | 10485760  | softHit |
+| testImportCommand:memoryUsage | 7141330  | 6815744   | 10485760  | softHit |
 | testImportCommand:timeUsage   | 0.0341   | 0.05      | 0.05      | ok      |
 +-------------------------------+----------+-----------+-----------+---------+
 
@@ -137,12 +137,12 @@ PHPPerfTest is licensed under the MIT License - see the LICENSE file for details
 Todo
 -------
 
-+ Multiple runs of one test (average)
-+ Refactor table renderer
-+ Support for 2,5M unit in limits
-+ Limits for etalon test
+Quality:
 + Test coverage
 + Move tests to examples
+
+Features:
++ Limits for etalon test
 + CPU usage
 + Memory gain
 + Calculate average of runs
