@@ -22,7 +22,18 @@
         "phpunit/phpunit": "~4.5"
     },
     "autoload": {
-        "psr-0": { "Composer": "src/" }
+        "psr-4": {
+            "Phpperftest\\": [
+                "src/Phpperftest"
+            ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Phpperftest\\": [
+                "tests/phpunit"
+            ]
+        }
     },
     "bin": ["bin/phpperftest"]
 }
