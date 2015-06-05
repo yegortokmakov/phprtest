@@ -139,7 +139,6 @@ Todo
 
 Quality:
 + Test coverage
-+ Move tests to examples
 
 Features:
 + Limits for etalon test
