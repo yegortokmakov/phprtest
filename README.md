@@ -79,6 +79,27 @@ class ImportTest extends \Phpperftest\TestSuite
 }
 ```
 
+To run same test multiple times, you can use @repeat annotation:
+
+```php
+<?php
+
+class ImportTest extends \Phpperftest\TestSuite
+{
+    /**
+     * @assert memoryUsage 6M 10M
+     * @assert timeUsage 0.05
+     * @repeat 5
+     */
+    public function testImportCommand($app)
+    {
+        $app = new \Symfony\Component\Console\Application('Myapp', 1);
+        $app->add(new \Myapp\Command\Import('import'));
+        $app->run(new ArgvInput(['myapp', 'import']));
+    }
+}
+```
+
 
 Installation
 ------------
@@ -116,7 +137,6 @@ PHPPerfTest is licensed under the MIT License - see the LICENSE file for details
 Todo
 -------
 
-+ Time weights for mock calls
 + Multiple runs of one test (average)
 + Refactor table renderer
 + Support for 2,5M unit in limits
@@ -124,3 +144,7 @@ Todo
 + Test coverage
 + Move tests to examples
 + CPU usage
++ Memory gain
++ Calculate average of runs
++ Statistic of results: warninng if they are bad
++ Time weights for mock calls

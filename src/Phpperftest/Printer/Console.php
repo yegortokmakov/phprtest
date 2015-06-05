@@ -18,15 +18,17 @@ class Console implements PrinterInterface
 
             $suiteResultMerge = array();
 
-            foreach ($suiteResult as $testName => $testResult) {
-                array_walk($testResult, function ($item, $key) use ($testName, &$suiteResultMerge) {
-                    $item = array_reverse($item, true);
-                    $item['metric'] = sprintf('%s:%s', $testName, $key);
-                    $item['result'] = $key == 'timeUsage' ? sprintf('%f', $item['result']) : sprintf('%d', $item['result']);
-                    $item = array_reverse($item, true);
+            foreach ($suiteResult as $testName => $testRuns) {
+                foreach ($testRuns as $runNumber => $testResult) {
+                    array_walk($testResult, function ($item, $key) use ($testName, &$suiteResultMerge, $runNumber) {
+                        $item = array_reverse($item, true);
+                        $item['metric'] = sprintf('%s:%s #%s', $testName, $key, $runNumber);
+                        $item['result'] = $key == 'timeUsage' ? sprintf('%f', $item['result']) : sprintf('%d', $item['result']);
+                        $item = array_reverse($item, true);
 
-                    $suiteResultMerge[] = $item;
-                });
+                        $suiteResultMerge[] = $item;
+                    });
+                }
             }
 
             $this->tableConverter->convert($suiteResultMerge);

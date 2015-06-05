@@ -10,6 +10,7 @@ class DummyTest extends TestSuite
      * @assert memoryUsage 1 3
      * @assert timeUsage 1
      * @provider simpleProvider
+     * @repeat 3
      */
     public function testSimple($a, $s, $d)
     {
