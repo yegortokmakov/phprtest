@@ -51,6 +51,35 @@ testImportCommand:memoryUsage warning assertion for memoryUsage: 7141330 > 62914
 1 tests completed. 1 warnings, 0 failures.
 ```
 
+To extract some part of the code from measurements (e.g. initialization of data),
+you can use @provider annotation:
+
+```php
+<?php
+
+class ImportTest extends \Phpperftest\TestSuite
+{
+    /**
+     * @assert memoryUsage 6M 10M
+     * @assert timeUsage 0.05
+     * @provider applicationProvider
+     */
+    public function testImportCommand($app)
+    {
+        $app->run(new ArgvInput(['myapp', 'import']));
+    }
+
+    protected function applicationProvider()
+    {
+        $app = new \Symfony\Component\Console\Application('Myapp', 1);
+        $app->add(new \Myapp\Command\Import('import'));
+
+        return $app;
+    }
+}
+```
+
+
 Installation
 ------------
 
@@ -87,7 +116,6 @@ PHPPerfTest is licensed under the MIT License - see the LICENSE file for details
 Todo
 -------
 
-+ Provider annotation
 + Time weights for mock calls
 + Multiple runs of one test (average)
 + Refactor table renderer
@@ -95,3 +123,4 @@ Todo
 + Limits for etalon test
 + Test coverage
 + Move tests to examples
++ CPU usage

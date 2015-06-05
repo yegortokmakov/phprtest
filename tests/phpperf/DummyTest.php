@@ -4,7 +4,6 @@ namespace testname;
 
 use Phpperftest\TestSuite;
 
-//@todo: class annotations inheritance
 class DummyTest extends TestSuite
 {
     /**
@@ -12,10 +11,8 @@ class DummyTest extends TestSuite
      * @assert timeUsage 1
      * @provider simpleProvider
      */
-    public function testSimple()
+    public function testSimple($a, $s, $d)
     {
-        // echo 'simpleTest' . PHP_EOL;
-        
     }
 
     public function simpleProvider()

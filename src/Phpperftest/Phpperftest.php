@@ -84,17 +84,17 @@ class Phpperftest
         if (count($provider)) {
             $provider = $provider[0]->getProvider();
 
-            if (method_exists($testObject, $provider)) {
+            if (!method_exists($testObject, $provider)) {
                 throw new PhpperftestException(sprintf('[%s:%s] Provider method %s not found', get_class($testObject), $methodName, $provider));
             }
             $providerData = $testObject->$provider();
-            var_dump($providerData );die;
+        } else {
+            $providerData = [];
         }
 
         $this->profiler->start();
 
-        call_user_func_array()
-        $testObject->$methodName();
+        call_user_func_array([$testObject, $methodName], $providerData);
 
         $this->profiler->stop();
 
