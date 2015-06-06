@@ -10,7 +10,10 @@ class Phpperftest
 {
     const VERSION = "0.1";
 
-    protected $annotationManager;
+    /**
+     * @var \mindplay\annotations\AnnotationManager
+     */
+    protected $annotations;
 
     protected $printer;
 
@@ -28,8 +31,10 @@ class Phpperftest
     {
 //        Annotations::$config['cache'] = new AnnotationCache(__DIR__ . '/../../tests/phpperf/cache');
         Annotations::$config['cache'] = false;
-        $this->annotationManager = Annotations::getManager();
-        $this->annotationManager->registry['assert'] = 'Phpperftest\Annotations\AssertAnnotation';
+        $this->annotations = Annotations::getManager();
+        $this->annotations->registry['assert'] = 'Phpperftest\Annotations\AssertAnnotation';
+        $this->annotations->registry['provider'] = 'Phpperftest\Annotations\ProviderAnnotation';
+        $this->annotations->registry['repeat'] = 'Phpperftest\Annotations\RepeatAnnotation';
 
         $this->printer = new ConsolePrinter;
         $this->profiler = new Profiler(true);
@@ -43,10 +48,7 @@ class Phpperftest
             try {
                 if (substr($methodName, 0, 4) != 'test') continue;
 
-                $this->results[$testClassName][$methodName] = array_merge_recursive(
-                    $this->runTest($testObject, $methodName),
-                    $this->getLimits($testClassName, $methodName)
-                );
+                $this->results[$testClassName][$methodName] = $this->runTest($testObject, $methodName);
             } catch (\Exception $e) {
                 throw new PhpperftestException(sprintf('[%s:%s] %s', $testClassName, $methodName, $e->getMessage()));
             }
@@ -55,12 +57,7 @@ class Phpperftest
 
     public function processResults()
     {
-        ob_start();
-        $this->printer->render($this->results, $this->status);
-        $results = ob_get_contents();
-        ob_end_clean();
-
-        return $results;
+        return $this->printer->render($this->results, $this->status);
     }
 
     public static function versionString()
@@ -75,37 +72,68 @@ class Phpperftest
 
     protected function runTest($testObject, $methodName)
     {
-        $this->profiler->start();
+        /** @var \Phpperftest\Annotations\ProviderAnnotation[] $provider */
+        $provider = $this->annotations->getMethodAnnotations(get_class($testObject), $methodName, '@provider');
+        if (count($provider)) {
+            $provider = $provider[0]->getProvider();
 
-        $testObject->$methodName();
+            if (!method_exists($testObject, $provider)) {
+                throw new PhpperftestException(sprintf('[%s:%s] Provider method %s not found', get_class($testObject), $methodName, $provider));
+            }
+            $providerData = $testObject->$provider();
+        } else {
+            $providerData = [];
+        }
 
-        $this->profiler->stop();
+        /** @var \Phpperftest\Annotations\RepeatAnnotation[] $repeat */
+        $repeat = $this->annotations->getMethodAnnotations(get_class($testObject), $methodName, '@repeat');
+        if (count($repeat)) {
+            $repeat = $repeat[0]->getRepeatTimes();
+        } else {
+            $repeat = 1;
+        }
 
-        return array(
-            'memoryUsage' => array(
-                'result' => $this->profiler->getMaxMemory(),
-            ),
-            'timeUsage' => array(
-                'result' => $this->profiler->getTimeUsed(),
-            ),
-        );
+        $result = [];
+        for ($runId = 1; $runId <= $repeat; $runId++) {
+            $this->profiler->start();
+
+            call_user_func_array([$testObject, $methodName], $providerData);
+
+            $this->profiler->stop();
+
+            $result[$runId] = array_merge_recursive(
+                array(
+                    'memoryUsage' => array(
+                        'result' => $this->profiler->getMaxMemory(),
+                    ),
+                    'timeUsage' => array(
+                        'result' => $this->profiler->getTimeUsed(),
+                    ),
+                ),
+                $this->getLimits(get_class($testObject), $methodName)
+            );
+        }
+
+        return $result;
     }
 
     public function checkLimits()
     {
         foreach ($this->results as $suiteName => &$suiteResult) {
-            foreach ($suiteResult as $testName => &$testResult) {
-                $this->status['tests']++;
+            foreach ($suiteResult as $testName => &$testRuns) {
+                foreach ($testRuns as $runId => &$testResult) {
+                    $this->status['tests']++;
 
-                foreach ($testResult as $metricName => &$metricResults) {
-                    if (isset($metricResults['hardLimit']) && $metricResults['result'] > $metricResults['hardLimit']) {
-                        $metricResults['status'] = 'hardHit';
-                        $this->status['hardHits'][] = sprintf('%s:%s failed assertion for %s: %f > %s', $suiteName, $testName, $metricName, $metricResults['result'], $metricResults['hardLimit']);
-                    } elseif (isset($metricResults['softLimit']) && $metricResults['result'] > $metricResults['softLimit']) {
-                        $metricResults['status'] = 'softHit';
-                        $this->status['softHits'][] = sprintf('%s:%s warning assertion for %s: %f > %s', $suiteName, $testName, $metricName, $metricResults['result'], $metricResults['softLimit']);
-                    } else {
-                        $metricResults['status'] = 'ok';
+                    foreach ($testResult as $metricName => &$metricResults) {
+                        if (isset($metricResults['hardLimit']) && $metricResults['result'] > $metricResults['hardLimit']) {
+                            $metricResults['status'] = 'hardHit';
+                            $this->status['hardHits'][] = sprintf('%s:%s failed assertion for %s: %f > %s', $suiteName, $testName, $metricName, $metricResults['result'], $metricResults['hardLimit']);
+                        } elseif (isset($metricResults['softLimit']) && $metricResults['result'] > $metricResults['softLimit']) {
+                            $metricResults['status'] = 'softHit';
+                            $this->status['softHits'][] = sprintf('%s:%s warning assertion for %s: %f > %s', $suiteName, $testName, $metricName, $metricResults['result'], $metricResults['softLimit']);
+                        } else {
+                            $metricResults['status'] = 'ok';
+                        }
                     }
                 }
             }
@@ -114,7 +142,7 @@ class Phpperftest
 
     protected function getLimits($testClassName, $methodName)
     {
-        $annotations = $this->annotationManager->getMethodAnnotations($testClassName, $methodName, '@assert');
+        $annotations = $this->annotations->getMethodAnnotations($testClassName, $methodName, '@assert');
         $limits = array();
 
         foreach ($annotations as $annotation) {

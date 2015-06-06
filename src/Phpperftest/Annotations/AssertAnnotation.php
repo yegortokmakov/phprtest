@@ -35,6 +35,8 @@ class AssertAnnotation extends Annotation implements IAnnotationParser
             $this->hardLimit = $properties[2];
         }
 
+        // @todo: is both map and if needed?
+
         $this->map($properties, array('metric', 'softLimit', 'hardLimit'));
 
         parent::initAnnotation($properties);

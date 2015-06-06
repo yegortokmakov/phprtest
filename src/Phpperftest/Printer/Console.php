@@ -6,53 +6,81 @@ class Console implements PrinterInterface
 {
     protected $tableConverter;
 
+    /**
+     * @param \Phpperftest\Printer\ArrayToTextTable $tableConverter
+     */
+    public function setTableConverter($tableConverter)
+    {
+        $this->tableConverter = $tableConverter;
+    }
+
+    /**
+     * @return \Phpperftest\Printer\ArrayToTextTable
+     */
+    public function getTableConverter()
+    {
+        return $this->tableConverter;
+    }
+
     public function __construct()
     {
-        $this->tableConverter = new ArrayToTextTable;
+        $this->setTableConverter(new ArrayToTextTable);
     }
 
     public function render($results, $status)
     {
+        $output = '';
+
         foreach ($results as $suiteName => $suiteResult) {
-            echo $suiteName . PHP_EOL;
+            $output .= $suiteName . PHP_EOL;
 
             $suiteResultMerge = array();
 
-            foreach ($suiteResult as $testName => $testResult) {
-                array_walk($testResult, function ($item, $key) use ($testName, &$suiteResultMerge) {
-                    $item = array_reverse($item, true);
-                    $item['metric'] = sprintf('%s:%s', $testName, $key);
-                    $item['result'] = $key == 'timeUsage' ? sprintf('%f', $item['result']) : sprintf('%d', $item['result']);
-                    $item = array_reverse($item, true);
+            foreach ($suiteResult as $testName => $testRuns) {
+                foreach ($testRuns as $runNumber => $testResult) {
+                    array_walk($testResult, function ($item, $key) use ($testName, &$suiteResultMerge, $runNumber) {
+                        $item = array_reverse($item, true);
+                        $item['metric'] = sprintf('%s:%s #%s', $testName, $key, $runNumber);
+                        $item['result'] = $key == 'timeUsage' ? sprintf('%f', $item['result']) : sprintf('%d', $item['result']);
+                        $item = array_reverse($item, true);
 
-                    $suiteResultMerge[] = $item;
-                });
+                        $suiteResultMerge[] = $item;
+                    });
+                }
             }
 
-            $this->tableConverter->convert($suiteResultMerge);
-            $this->tableConverter->showHeaders(true);
-            $this->tableConverter->render();
+            ob_start();
 
-            echo PHP_EOL . PHP_EOL;
+            $this->getTableConverter()->convert($suiteResultMerge);
+            $this->getTableConverter()->showHeaders(true);
+            $this->getTableConverter()->render();
+
+            $output .= ob_get_contents();
+            ob_end_clean();
+
+            $output .= PHP_EOL . PHP_EOL;
         }
 
         if (count($status['softHits'])) {
-            echo 'Warnings:' . PHP_EOL;
+            $output .= 'Warnings:' . PHP_EOL;
             foreach ($status['softHits'] as $value) {
-                echo $value . PHP_EOL;
+                $output .= $value . PHP_EOL;
             }
-            echo PHP_EOL;
+            $output .= PHP_EOL;
         }
 
 
         if (count($status['hardHits'])) {
-            echo 'Failures:' . PHP_EOL;
+            $output .= 'Failures:' . PHP_EOL;
             foreach ($status['hardHits'] as $value) {
-                echo $value . PHP_EOL;
+                $output .= $value . PHP_EOL;
             }
-            echo PHP_EOL;
+            $output .= PHP_EOL;
         }
 
-        printf("%d tests completed. %d warnings, %d failures. \r\n", $status['tests'], count($status['softHits']), count($status['hardHits']));
+        $output .=sprintf("%d tests completed. %d warnings, %d failures. \r\n", $status['tests'], count($status['softHits']), count($status['hardHits']));
+
+
+        return $output;
     }
 }
