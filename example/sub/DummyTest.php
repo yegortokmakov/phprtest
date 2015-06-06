@@ -2,7 +2,7 @@
 
 namespace testname2;
 
-use Phpperftest\TestSuite;
+use Phprtest\TestSuite;
 
 //@todo: class annotations inheritance
 class DummyTest extends TestSuite

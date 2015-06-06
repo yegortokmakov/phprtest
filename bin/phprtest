@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * Phpperftest CLI
+ * Phprtest CLI
  */
 
 $loader = null;
@@ -20,13 +20,13 @@ if (!$loader) {
     die(1);
 }
 
-$loader->add('Phpperftest', __DIR__ . '/../src');
+$loader->add('Phprtest', __DIR__ . '/../src');
 $loader->register(true);
 
 use Symfony\Component\Console\Application;
 
-$app = new Application('Phpperftest', Phpperftest\Phpperftest::VERSION);
+$app = new Application('Phprtest', Phprtest\Phprtest::VERSION);
 
-$app->add(new Phpperftest\Command\Run('run'));
+$app->add(new Phprtest\Command\Run('run'));
 
 $app->run();

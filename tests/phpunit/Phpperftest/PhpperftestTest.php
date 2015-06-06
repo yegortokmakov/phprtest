@@ -1,19 +1,19 @@
 <?php
 
-namespace Phpperftest;
+namespace Phprtest;
 
-class PhpperftestTest extends \PHPUnit_Framework_TestCase
+class PhprtestTest extends \PHPUnit_Framework_TestCase
 {
     protected $instance = null;
 
     public function setUp()
     {
-        $this->instance = new Phpperftest();
+        $this->instance = new Phprtest();
     }
 
     public function testVersionString()
     {
-        $this->assertContains(Phpperftest::VERSION, Phpperftest::versionString());
+        $this->assertContains(Phprtest::VERSION, Phprtest::versionString());
     }
 }
 

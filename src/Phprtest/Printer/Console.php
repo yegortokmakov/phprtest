@@ -1,13 +1,13 @@
 <?php
 
-namespace Phpperftest\Printer;
+namespace Phprtest\Printer;
 
 class Console implements PrinterInterface
 {
     protected $tableConverter;
 
     /**
-     * @param \Phpperftest\Printer\ArrayToTextTable $tableConverter
+     * @param \Phprtest\Printer\ArrayToTextTable $tableConverter
      */
     public function setTableConverter($tableConverter)
     {
@@ -15,7 +15,7 @@ class Console implements PrinterInterface
     }
 
     /**
-     * @return \Phpperftest\Printer\ArrayToTextTable
+     * @return \Phprtest\Printer\ArrayToTextTable
      */
     public function getTableConverter()
     {

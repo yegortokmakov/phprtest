@@ -1,9 +1,9 @@
-PHPPerfTest
+PHPRTest
 -------
 
-PHPPerfTest is a simple performance tests for modern PHP applications. In a fashion of PHPUnit,
+PHPRTest is a simple resources usage tests for modern PHP applications. In a fashion of PHPUnit,
 it allows developers to keep track of memory consumption and execution time of critical parts
-of software. PHPPerfTest allows to set up soft and hard limits for each test suite and is
+of software. PHPRTest allows to set up soft and hard limits for each test suite and is
 easy to integrate with your favorite CI solution.
 
 Usage
@@ -16,7 +16,7 @@ usage limit is 10 MB.
 ```php
 <?php
 
-class ImportTest extends \Phpperftest\TestSuite
+class ImportTest extends \Phprtest\TestSuite
 {
     /**
      * @assert memoryUsage 6.5M 10M
@@ -34,7 +34,7 @@ class ImportTest extends \Phpperftest\TestSuite
 Running this test will produce similar results:
 
 ```
-PHP Performance Tests
+PHP Resources usage tests
 --------------------------------
 
 ImportTest
@@ -57,7 +57,7 @@ you can use @provider annotation:
 ```php
 <?php
 
-class ImportTest extends \Phpperftest\TestSuite
+class ImportTest extends \Phprtest\TestSuite
 {
     /**
      * @assert memoryUsage 6M 10M
@@ -84,7 +84,7 @@ To run same test multiple times, you can use @repeat annotation:
 ```php
 <?php
 
-class ImportTest extends \Phpperftest\TestSuite
+class ImportTest extends \Phprtest\TestSuite
 {
     /**
      * @assert memoryUsage 6M 10M
@@ -104,21 +104,21 @@ class ImportTest extends \Phpperftest\TestSuite
 Installation
 ------------
 
-PHPPerfTest is available on Packagist ([yegortokmakov/phpperftest](http://packagist.org/packages/yegortokmakov/phpperftest))
+PHPRTest is available on Packagist ([yegortokmakov/phprtest](http://packagist.org/packages/yegortokmakov/phprtest))
 and as such installable via [Composer](http://getcomposer.org/).
 
 ```bash
-php composer.phar require yegortokmakov/phpperftest
+php composer.phar require yegortokmakov/phprtest
 ```
 
-Or simply add a dependency on yegortokmakov/phpperftest to your project's composer.json file
+Or simply add a dependency on yegortokmakov/phprtest to your project's composer.json file
 if you use Composer to manage the dependencies of your project. Here is a minimal example of a
-composer.json file that just defines a development-time dependency on PHPPerfTest:
+composer.json file that just defines a development-time dependency on PHPRTest:
 
 ```json
 {
     "require-dev": {
-        "yegortokmakov/phpperftest": "dev-master"
+        "yegortokmakov/phprtest": "dev-master"
     }
 }
 ```
@@ -127,12 +127,12 @@ Author
 -------
 
 Yegor Tokmakov - <yegor@tokmakov.biz><br />
-See also the list of [contributors](https://github.com/yegortokmakov/phpperftest/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/yegortokmakov/phprtest/contributors) who participated in this project.
 
 License
 -------
 
-PHPPerfTest is licensed under the MIT License - see the LICENSE file for details
+PHPRTest is licensed under the MIT License - see the LICENSE file for details
 
 Todo
 -------

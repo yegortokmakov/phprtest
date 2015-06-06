@@ -2,7 +2,7 @@
 
 namespace testname;
 
-use Phpperftest\TestSuite;
+use Phprtest\TestSuite;
 
 class DummyTest extends TestSuite
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpperftest\Annotations;
+namespace Phprtest\Annotations;
 
 use mindplay\annotations\Annotation;
 use mindplay\annotations\AnnotationException;

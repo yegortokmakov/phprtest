@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpperftest;
+namespace Phprtest;
 
 use PHPUnit_Framework_Exception;
 use PHPUnit_Framework_MockObject_Generator;

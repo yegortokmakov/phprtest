@@ -1,9 +1,9 @@
 <?php
 
-namespace Phpperftest\Command;
+namespace Phprtest\Command;
 
-use Phpperftest\Phpperftest;
-use Phpperftest\PhpperftestException;
+use Phprtest\Phprtest;
+use Phprtest\PhprtestException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,29 +40,29 @@ class Run extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(Phpperftest::versionString() . PHP_EOL . str_repeat('-', strlen(Phpperftest::versionString()) + 5) . PHP_EOL);
+        $output->writeln(Phprtest::versionString() . PHP_EOL . str_repeat('-', strlen(Phprtest::versionString()) + 5) . PHP_EOL);
 
         $tests = $this->loadTests($input->getArgument('suite'));
 
         if ($input->getOption('etalon-test')) {
-            array_unshift($tests, 'Phpperftest\EtalonTest');
+            array_unshift($tests, 'Phprtest\EtalonTest');
         }
 
-        $phpperftest = new Phpperftest();
+        $phprtest = new Phprtest();
 
         foreach ($tests as $test) {
-            $phpperftest->run($test);
+            $phprtest->run($test);
         }
 
         if ($input->getOption('no-checks')) {
             $output->writeln("<fg=white;bg=yellow>  All assertions are skipped (--no-checks flag)  </fg=white;bg=yellow>\n");
         } else {
-            $phpperftest->checkLimits();
+            $phprtest->checkLimits();
         }
 
-        $output->write($phpperftest->processResults());
+        $output->write($phprtest->processResults());
 
-        if ($phpperftest->isFailure()) {
+        if ($phprtest->isFailure()) {
             $output->writeln("\n<fg=white;bg=red>\n TEST FAILED \n</fg=white;bg=red>");
             exit(1);
         }

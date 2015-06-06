@@ -4,4 +4,3 @@
 /cache/
 /.vagrant
 /build/*
-tests/phpperf/cache/

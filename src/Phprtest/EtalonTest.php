@@ -1,8 +1,8 @@
 <?php
 
-namespace Phpperftest;
+namespace Phprtest;
 
-use Phpperftest\TestSuite;
+use Phprtest\TestSuite;
 
 //@todo: class annotations inheritance
 class EtalonTest extends TestSuite

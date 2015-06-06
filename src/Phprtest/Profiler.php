@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpperftest;
+namespace Phprtest;
 
 class Profiler
 {

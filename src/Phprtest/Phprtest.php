@@ -1,12 +1,12 @@
 <?php
 
-namespace Phpperftest;
+namespace Phprtest;
 
-use Phpperftest\Printer\Console as ConsolePrinter;
+use Phprtest\Printer\Console as ConsolePrinter;
 use mindplay\annotations\AnnotationCache;
 use mindplay\annotations\Annotations;
 
-class Phpperftest
+class Phprtest
 {
     const VERSION = "0.1";
 
@@ -32,9 +32,9 @@ class Phpperftest
 //        Annotations::$config['cache'] = new AnnotationCache(__DIR__ . '/../../tests/phpperf/cache');
         Annotations::$config['cache'] = false;
         $this->annotations = Annotations::getManager();
-        $this->annotations->registry['assert'] = 'Phpperftest\Annotations\AssertAnnotation';
-        $this->annotations->registry['provider'] = 'Phpperftest\Annotations\ProviderAnnotation';
-        $this->annotations->registry['repeat'] = 'Phpperftest\Annotations\RepeatAnnotation';
+        $this->annotations->registry['assert'] = 'Phprtest\Annotations\AssertAnnotation';
+        $this->annotations->registry['provider'] = 'Phprtest\Annotations\ProviderAnnotation';
+        $this->annotations->registry['repeat'] = 'Phprtest\Annotations\RepeatAnnotation';
 
         $this->printer = new ConsolePrinter;
         $this->profiler = new Profiler(true);
@@ -50,7 +50,7 @@ class Phpperftest
 
                 $this->results[$testClassName][$methodName] = $this->runTest($testObject, $methodName);
             } catch (\Exception $e) {
-                throw new PhpperftestException(sprintf('[%s:%s] %s', $testClassName, $methodName, $e->getMessage()));
+                throw new PhprtestException(sprintf('[%s:%s] %s', $testClassName, $methodName, $e->getMessage()));
             }
         }
     }
@@ -62,7 +62,7 @@ class Phpperftest
 
     public static function versionString()
     {
-        return 'PHP Performance Tests v.' . self::VERSION;
+        return 'PHP Resources usage tests v.' . self::VERSION;
     }
 
     public function isFailure()
@@ -72,20 +72,20 @@ class Phpperftest
 
     protected function runTest($testObject, $methodName)
     {
-        /** @var \Phpperftest\Annotations\ProviderAnnotation[] $provider */
+        /** @var \Phprtest\Annotations\ProviderAnnotation[] $provider */
         $provider = $this->annotations->getMethodAnnotations(get_class($testObject), $methodName, '@provider');
         if (count($provider)) {
             $provider = $provider[0]->getProvider();
 
             if (!method_exists($testObject, $provider)) {
-                throw new PhpperftestException(sprintf('[%s:%s] Provider method %s not found', get_class($testObject), $methodName, $provider));
+                throw new PhprtestException(sprintf('[%s:%s] Provider method %s not found', get_class($testObject), $methodName, $provider));
             }
             $providerData = $testObject->$provider();
         } else {
             $providerData = [];
         }
 
-        /** @var \Phpperftest\Annotations\RepeatAnnotation[] $repeat */
+        /** @var \Phprtest\Annotations\RepeatAnnotation[] $repeat */
         $repeat = $this->annotations->getMethodAnnotations(get_class($testObject), $methodName, '@repeat');
         if (count($repeat)) {
             $repeat = $repeat[0]->getRepeatTimes();

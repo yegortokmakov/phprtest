@@ -1,7 +1,7 @@
 {
-    "name": "yegortokmakov/phpperftest",
-    "description": "Simple performance tests for PHP applications",
-    "keywords": ["test", "performance"],
+    "name": "yegortokmakov/phprtest",
+    "description": "Simple resources usage tests for PHP applications",
+    "keywords": ["test", "performance", "resources"],
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -23,17 +23,17 @@
     },
     "autoload": {
         "psr-4": {
-            "Phpperftest\\": [
-                "src/Phpperftest"
+            "Phprtest\\": [
+                "src/Phprtest"
             ]
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Phpperftest\\": [
+            "Phprtest\\": [
                 "tests/phpunit"
             ]
         }
     },
-    "bin": ["bin/phpperftest"]
+    "bin": ["bin/phprtest"]
 }

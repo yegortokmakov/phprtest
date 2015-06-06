@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpperftest\Printer;
+namespace Phprtest\Printer;
 
 class ArrayToTextTable
 {
