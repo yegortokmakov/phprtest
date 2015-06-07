@@ -5,6 +5,7 @@ namespace Phprtest;
 use Phprtest\Printer\Console as ConsolePrinter;
 use mindplay\annotations\AnnotationCache;
 use mindplay\annotations\Annotations;
+use Phprtest\Printer\PrinterInterface;
 
 class Phprtest
 {
@@ -15,8 +16,14 @@ class Phprtest
      */
     protected $annotations;
 
+    /**
+     * @var PrinterInterface
+     */
     protected $printer;
 
+    /**
+     * @var \Phprtest\Profiler
+     */
     protected $profiler;
 
     protected $results = array();
@@ -24,20 +31,51 @@ class Phprtest
     protected $status = array(
         'tests' => 0,
         'softHits' => array(),
-        'hardHits' => array(),            
+        'hardHits' => array(),
     );
 
     public function __construct()
     {
-//        Annotations::$config['cache'] = new AnnotationCache(__DIR__ . '/../../tests/phpperf/cache');
         Annotations::$config['cache'] = false;
         $this->annotations = Annotations::getManager();
         $this->annotations->registry['assert'] = 'Phprtest\Annotations\AssertAnnotation';
         $this->annotations->registry['provider'] = 'Phprtest\Annotations\ProviderAnnotation';
         $this->annotations->registry['repeat'] = 'Phprtest\Annotations\RepeatAnnotation';
 
-        $this->printer = new ConsolePrinter;
-        $this->profiler = new Profiler(true);
+        $this->setPrinter(new ConsolePrinter);
+        $this->setProfiler(new Profiler(true));
+    }
+
+    /**
+     * @param PrinterInterface $printer
+     */
+    public function setPrinter(PrinterInterface $printer)
+    {
+        $this->printer = $printer;
+    }
+
+    /**
+     * @return PrinterInterface
+     */
+    public function getPrinter()
+    {
+        return $this->printer;
+    }
+
+    /**
+     * @param \Phprtest\Profiler $profiler
+     */
+    public function setProfiler(\Phprtest\Profiler $profiler)
+    {
+        $this->profiler = $profiler;
+    }
+
+    /**
+     * @return \Phprtest\Profiler
+     */
+    public function getProfiler()
+    {
+        return $this->profiler;
     }
 
     public function run($testClassName)
@@ -81,6 +119,8 @@ class Phprtest
                 throw new PhprtestException(sprintf('[%s:%s] Provider method %s not found', get_class($testObject), $methodName, $provider));
             }
             $providerData = $testObject->$provider();
+
+            if (is_null($providerData)) $providerData = [];
         } else {
             $providerData = [];
         }
@@ -142,6 +182,7 @@ class Phprtest
 
     protected function getLimits($testClassName, $methodName)
     {
+        /** @var \Phprtest\Annotations\AssertAnnotation $annotations */
         $annotations = $this->annotations->getMethodAnnotations($testClassName, $methodName, '@assert');
         $limits = array();
 

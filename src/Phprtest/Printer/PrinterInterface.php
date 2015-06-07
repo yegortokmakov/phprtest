@@ -4,5 +4,5 @@ namespace Phprtest\Printer;
 
 interface PrinterInterface
 {
-    public function render($output, $status);
+    public function render(array $output, array $status);
 }

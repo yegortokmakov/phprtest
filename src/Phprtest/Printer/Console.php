@@ -27,7 +27,7 @@ class Console implements PrinterInterface
         $this->setTableConverter(new ArrayToTextTable);
     }
 
-    public function render($results, $status)
+    public function render(array $results, array $status)
     {
         $output = '';
 
