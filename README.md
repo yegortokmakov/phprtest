@@ -136,10 +136,6 @@ PHPRTest is licensed under the MIT License - see the LICENSE file for details
 Todo
 -------
 
-Quality:
-+ Test coverage
-
-Features:
 + Limits for etalon test
 + CPU usage
 + Memory gain
