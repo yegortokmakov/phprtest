@@ -2,7 +2,7 @@
 
 namespace Phprtest;
 
-class Profiler
+class Profiler implements ProfilerInterface
 {
     protected $realMemoryUsage;
 

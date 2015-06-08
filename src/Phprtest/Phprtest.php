@@ -22,7 +22,7 @@ class Phprtest
     protected $printer;
 
     /**
-     * @var \Phprtest\Profiler
+     * @var ProfilerInterface
      */
     protected $profiler;
 
@@ -37,11 +37,12 @@ class Phprtest
     public function __construct()
     {
         Annotations::$config['cache'] = false;
-        $this->annotations = Annotations::getManager();
-        $this->annotations->registry['assert'] = 'Phprtest\Annotations\AssertAnnotation';
-        $this->annotations->registry['provider'] = 'Phprtest\Annotations\ProviderAnnotation';
-        $this->annotations->registry['repeat'] = 'Phprtest\Annotations\RepeatAnnotation';
+        $annotationManager = Annotations::getManager();
+        $annotationManager->registry['assert'] = 'Phprtest\Annotations\AssertAnnotation';
+        $annotationManager->registry['provider'] = 'Phprtest\Annotations\ProviderAnnotation';
+        $annotationManager->registry['repeat'] = 'Phprtest\Annotations\RepeatAnnotation';
 
+        $this->setAnnotations($annotationManager);
         $this->setPrinter(new ConsolePrinter);
         $this->setProfiler(new Profiler(true));
     }
@@ -63,19 +64,35 @@ class Phprtest
     }
 
     /**
-     * @param \Phprtest\Profiler $profiler
+     * @param ProfilerInterface $profiler
      */
-    public function setProfiler(\Phprtest\Profiler $profiler)
+    public function setProfiler(ProfilerInterface $profiler)
     {
         $this->profiler = $profiler;
     }
 
     /**
-     * @return \Phprtest\Profiler
+     * @return ProfilerInterface
      */
     public function getProfiler()
     {
         return $this->profiler;
+    }
+
+    /**
+     * @param \mindplay\annotations\AnnotationManager $annotations
+     */
+    public function setAnnotations($annotations)
+    {
+        $this->annotations = $annotations;
+    }
+
+    /**
+     * @return \mindplay\annotations\AnnotationManager
+     */
+    public function getAnnotations()
+    {
+        return $this->annotations;
     }
 
     public function run($testClassName)
@@ -116,7 +133,7 @@ class Phprtest
             $provider = $provider[0]->getProvider();
 
             if (!method_exists($testObject, $provider)) {
-                throw new PhprtestException(sprintf('[%s:%s] Provider method %s not found', get_class($testObject), $methodName, $provider));
+                throw new PhprtestException(sprintf('Provider method %s not found', $provider));
             }
             $providerData = $testObject->$provider();
 
@@ -186,11 +203,13 @@ class Phprtest
         $annotations = $this->annotations->getMethodAnnotations($testClassName, $methodName, '@assert');
         $limits = array();
 
-        foreach ($annotations as $annotation) {
-            $limits[$annotation->metric] = array(
-                'softLimit' => $annotation->softLimit,
-                'hardLimit' => $annotation->hardLimit,
-            );
+        if (count($annotations)) {
+            foreach ($annotations as $annotation) {
+                $limits[$annotation->metric] = array(
+                    'softLimit' => $annotation->softLimit,
+                    'hardLimit' => $annotation->hardLimit,
+                );
+            }
         }
 
         return $limits;

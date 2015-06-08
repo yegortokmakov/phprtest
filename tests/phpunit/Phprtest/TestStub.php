@@ -5,8 +5,8 @@ namespace Phprtest;
 class TestStub extends TestSuite
 {
     /**
-     * @assert memoryUsage 1 3
-     * @assert timeUsage 1
+     * @assert memoryUsage 10 20
+     * @assert timeUsage 5
      * @provider providerStub
      */
     public function testStub(){}
