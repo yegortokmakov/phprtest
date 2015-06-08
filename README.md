@@ -1,5 +1,4 @@
-PHPRTest
--------
+# PHPRTest [![Latest Stable](https://poser.pugx.org/yegortokmakov/phprtest/version.png)](https://packagist.org/packages/yegortokmakov/phprtest) [![Build Status](https://travis-ci.org/yegortokmakov/phprtest.svg?branch=master)](https://travis-ci.org/yegortokmakov/phprtest)
 
 PHPRTest is a simple resources usage tests for modern PHP applications. In a fashion of PHPUnit,
 it allows developers to keep track of memory consumption and execution time of critical parts
