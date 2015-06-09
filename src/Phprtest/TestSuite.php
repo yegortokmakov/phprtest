@@ -13,6 +13,28 @@ class TestSuite {
     private $mockObjectGenerator = null;
 
     /**
+     * Get the mock object generator, creating it if it doesn't exist.
+     *
+     * @return PHPUnit_Framework_MockObject_Generator
+     */
+    protected function getMockObjectGenerator()
+    {
+        if (null === $this->mockObjectGenerator) {
+            $this->mockObjectGenerator = new PHPUnit_Framework_MockObject_Generator;
+        }
+
+        return $this->mockObjectGenerator;
+    }
+
+    /**
+     * @param \PHPUnit_Framework_MockObject_Generator $mockObjectGenerator
+     */
+    protected function setMockObjectGenerator(\PHPUnit_Framework_MockObject_Generator $mockObjectGenerator)
+    {
+        $this->mockObjectGenerator = $mockObjectGenerator;
+    }
+
+    /**
      * Returns a mock object for the specified class.
      *
      * @param  string                                  $originalClassName       Name of the class to mock.
@@ -31,7 +53,7 @@ class TestSuite {
      * @throws PHPUnit_Framework_Exception
      * @since  Method available since Release 3.0.0
      */
-    public function getMock($originalClassName, $methods = array(), array $arguments = array(), $mockClassName = '', $callOriginalConstructor = true, $callOriginalClone = true, $callAutoload = true, $cloneArguments = false, $callOriginalMethods = false)
+    protected function getMock($originalClassName, $methods = array(), array $arguments = array(), $mockClassName = '', $callOriginalConstructor = true, $callOriginalClone = true, $callAutoload = true, $cloneArguments = false, $callOriginalMethods = false)
     {
         $mockObject = $this->getMockObjectGenerator()->getMock(
             $originalClassName,
@@ -49,19 +71,5 @@ class TestSuite {
         // $this->mockObjects[] = $mockObject;
 
         return $mockObject;
-    }
-
-    /**
-     * Get the mock object generator, creating it if it doesn't exist.
-     *
-     * @return   PHPUnit_Framework_MockObject_Generator
-     */
-    protected function getMockObjectGenerator()
-    {
-        if (null === $this->mockObjectGenerator) {
-            $this->mockObjectGenerator = new PHPUnit_Framework_MockObject_Generator;
-        }
-
-        return $this->mockObjectGenerator;
     }
 }
