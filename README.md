@@ -122,6 +122,16 @@ composer.json file that just defines a development-time dependency on PHPRTest:
 }
 ```
 
+Todo
+-------
+
++ Limits for etalon test
++ CPU usage
++ Memory gain
++ Calculate average of runs
++ Statistic of results: warninng if they are bad
++ Time weights for mock calls
+
 Author
 -------
 
@@ -132,13 +142,3 @@ License
 -------
 
 PHPRTest is licensed under the MIT License - see the LICENSE file for details
-
-Todo
--------
-
-+ Limits for etalon test
-+ CPU usage
-+ Memory gain
-+ Calculate average of runs
-+ Statistic of results: warninng if they are bad
-+ Time weights for mock calls

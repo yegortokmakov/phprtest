@@ -9,7 +9,7 @@ use Phprtest\Printer\PrinterInterface;
 
 class Phprtest
 {
-    const VERSION = "0.1";
+    const VERSION = "0.1.1";
 
     /**
      * @var \mindplay\annotations\AnnotationManager
