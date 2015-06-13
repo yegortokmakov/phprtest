@@ -9,7 +9,7 @@ use Phprtest\Printer\PrinterInterface;
 
 class Phprtest
 {
-    const VERSION = "0.1.1";
+    const VERSION = "0.1.2";
 
     /**
      * @var \mindplay\annotations\AnnotationManager
@@ -138,6 +138,7 @@ class Phprtest
             $providerData = $testObject->$provider();
 
             if (is_null($providerData)) $providerData = [];
+            if (!is_array($providerData)) $providerData = [$providerData];
         } else {
             $providerData = [];
         }

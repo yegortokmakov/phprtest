@@ -4,7 +4,9 @@ namespace Phprtest;
 
 use PHPUnit_Framework_Exception;
 use PHPUnit_Framework_MockObject_Generator;
+use PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount;
 use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit_Framework_MockObject_Stub_Return;
 
 class TestSuite {
     /**
@@ -71,5 +73,32 @@ class TestSuite {
         // $this->mockObjects[] = $mockObject;
 
         return $mockObject;
+    }
+
+    /**
+     * Returns a matcher that matches when the method is executed
+     * zero or more times.
+     *
+     * @return PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount
+     * @since  Method available since Release 3.0.0
+     */
+    public static function any()
+    {
+        return new PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount;
+    }
+
+    /**
+     * @param  mixed                                    $value
+     * @return PHPUnit_Framework_MockObject_Stub_Return
+     * @since  Method available since Release 3.0.0
+     */
+    public static function returnValue($value)
+    {
+        return new PHPUnit_Framework_MockObject_Stub_Return($value);
+    }
+
+    protected function fail($msg)
+    {
+        throw new TestSuiteException($msg);
     }
 }

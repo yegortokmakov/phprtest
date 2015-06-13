@@ -68,7 +68,7 @@ class ImportTest extends \Phprtest\TestSuite
         $app->run(new ArgvInput(['myapp', 'import']));
     }
 
-    protected function applicationProvider()
+    public function applicationProvider()
     {
         $app = new \Symfony\Component\Console\Application('Myapp', 1);
         $app->add(new \Myapp\Command\Import('import'));

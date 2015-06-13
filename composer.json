@@ -2,6 +2,7 @@
     "name": "yegortokmakov/phprtest",
     "description": "Simple resources usage tests for PHP applications",
     "keywords": ["test", "performance", "resources"],
+    "minimum-stability": "stable",
     "type": "library",
     "license": "MIT",
     "authors": [

@@ -111,9 +111,8 @@ class Run extends Command
         require_once($filename);
 
         $className = pathinfo($filename)['filename'];
-
         foreach (array_reverse(get_declared_classes()) as $loadedClass) {
-            if (strpos($loadedClass, $className)) {
+            if (strpos($loadedClass, $className) !== false) {
                 return $loadedClass;
             }
         }
