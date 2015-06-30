@@ -76,6 +76,8 @@ class Run extends Command
             $files = array($path);
         } elseif (is_dir($path)) {
             $files = $this->scanTestDir(realpath($path));
+        } else {
+            $files = [];
         }
 
         $tests = array();

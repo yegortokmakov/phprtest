@@ -16,7 +16,7 @@
         "php": ">=5.4",
         "symfony/console": "~2.5",
         "symfony/finder": "~2.2",
-        "mindplay/annotations": "1.2.*@dev",
+        "mindplay/annotations": "1.2.0",
         "phpunit/phpunit-mock-objects": "~2.3"
     },
     "require-dev": {
